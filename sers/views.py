@@ -2,12 +2,15 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
+from rest_framework.mixins import CreateModelMixin
 from rest_framework.views import APIView
 from .models import Book, Publish, Author
 from rest_framework import serializers
 # 用于将数据（有序字典的格式）转化成json数据,需要在setting注册rest_framework
 from rest_framework.response import Response
 
+
+# =============================================本文件将view文件夹下类容进行了汇总===========================================
 
 # ===================================================基于APIView的接口实现================================================
 
@@ -108,7 +111,7 @@ class BookDetailView(APIView):
 
 
 # ===================================================基于GenericAPIView的接口实现=======================================
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListCreateAPIView
 
 
 #
@@ -243,10 +246,61 @@ class PublishDetailView(GenericAPIView):
 
 
 # =======================================基于ViewSet的接口实现（将crud封装）==================================
-from rest_framework.viewsets import ViewSet
+# from rest_framework.viewsets import ViewSet
+#
+#
+# # ViewSet：重写了分发机制
+#
+# class AuthorSerializers(serializers.ModelSerializer):
+#     class Meta:
+#         model = Author
+#
+#         fields = '__all__'
+#
+#
+# class AuthorView(ViewSet):
+#     def get_all(self,request):
+#         return Response("查看所有")
+#
+#     def add_object(self,request):
+#         return Response("添加资源")
+#
+#     def get_object(self, request, pk):
+#         return Response("查看一个资源")
+#
+#     def update_object(self, request, pk):
+#         return Response("更新资源")
+#
+#     def delete_object(self, request, pk):
+#         return Response("删除单一资源")
 
 
-# ViewSet：重写了分发机制
+# =======================================基于GenericViewSet+ListCreateAPIView...的接口实线================================
+
+# 主要是在viewSet的基础上不用自己再去写实现代码
+# from rest_framework.mixins import ListModelMixin, CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, \
+#     DestroyModelMixin
+# from rest_framework.viewsets import GenericViewSet
+#
+#
+# class AuthorSerializers(serializers.ModelSerializer):
+#     class Meta:
+#         model = Author
+#
+#         fields = '__all__'
+#
+#
+# class AuthorView(GenericViewSet, ListModelMixin, CreateModelMixin, RetrieveModelMixin, DestroyModelMixin,
+#                  UpdateModelMixin):
+#     queryset = Author.objects.all()
+#     serializer_class = AuthorSerializers
+
+
+# =======================================基于ModelViewSet的接口实线================================
+
+# 主要是在viewSet的基础上不用自己再去写实现代码,ModelViewSet直接相当于自动把Mixin全部继承了
+from rest_framework.viewsets import ModelViewSet
+
 
 class AuthorSerializers(serializers.ModelSerializer):
     class Meta:
@@ -255,18 +309,6 @@ class AuthorSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AuthorView(ViewSet):
-    def get_all(self,request):
-        return Response("查看所有")
-
-    def add_object(self,request):
-        return Response("添加资源")
-
-    def get_object(self, request, pk):
-        return Response("查看一个资源")
-
-    def update_object(self, request, pk):
-        return Response("更新资源")
-
-    def delete_object(self, request, pk):
-        return Response("删除单一资源")
+class AuthorView(ModelViewSet):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializers
