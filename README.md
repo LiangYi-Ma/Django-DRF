@@ -18,10 +18,10 @@
 
 1. 在setting中修改数据库的配置（本项目设置的数据库名为DRF，请确保库在您本地已经建立）
 2. 下载依赖：因为不是新建的项目虚拟环境，所以库比较多，就不在这里生成依赖文件，主要的版本如下：
-       Django==4.0.5
-       django-import-export==2.8.0
-       djangorestframework==3.13.1
-       python==3.9
+       * Django==4.0.5
+       * django-import-export==2.8.0
+       * djangorestframework==3.13.1
+       * python==3.9
 3. 使用命令生成数据库迁移文件：python manage.py makemigrations
 4. 使用命令进行数据库迁移：python manage.py migrate
 5. 运行，就可以启动，端口5000
